@@ -1,1 +1,1 @@
-# sapui5-lolapi-practise
+# sapui5 lol api
