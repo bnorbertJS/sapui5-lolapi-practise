@@ -117,7 +117,7 @@
             growingScrollToLoad="false">
             <StandardListItem title="{champs>name}, {champs>title}" press="onPressListItem" 
               type="Navigation" description="{champs>lore}"
-              icon="http://ddragon.leagueoflegends.com/cdn/7.21.1/img/champion/{champs>image/full}"
+              icon="ddragonLin.leagueoflegends.com/cdn/7.21.1/img/champion/{champs>image/full}"
               iconDensityAware="false" iconInset="false"/>
           </List>
         </l:BlockLayoutCell>
