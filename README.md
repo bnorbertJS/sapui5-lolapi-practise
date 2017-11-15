@@ -463,3 +463,17 @@ Details.view.xml
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
 ```
+
+Change skin:
+
+```
+changeSkin: function(e){
+			var skinId = e.getSource().getBindingContext("viewModel").getObject().num;
+			var headerPic = this.getView().byId("header");
+			var champName = this.getView().getModel("viewModel").getProperty("/selectedChampion/name");
+			var url = "/ddragon/img/champion/splash/" + champName + "_" + skinId + ".jpg";
+			
+			headerPic.setSrc(url);
+		},
+```
+
