@@ -80,12 +80,34 @@
 		}
     
   ```
+  neo-app.json
+  
+  Destination usage:
+  ```
+  , {
+		"path": "/league",
+		"target": {
+			"type": "destination",
+			"name": "lol-rest",
+			"entryPath": "/"
+		},
+		"description": "lol rest api"
+	},{
+		"path": "/ddragon",
+		"target": {
+			"type": "destination",
+			"name": "lol-ddragon",
+			"entryPath": "/"
+		}
+	}
+  ```
+  
   ## 2. Champions list
   Landing.controller.js
   ```
-   getChampionList: function(url,token){
+   getChampionList: function(token){
 			return new Promise(function(resolve,reject){
-				$.get(url + token, function( data ) {
+				$.get("/league/lol/static-data/v3/champions?tags=image&api_key=" + token, function( data ) {
 					var iter = [];
 					Object.keys(data.data).map(function(x){ iter.push(data.data[x]); });
 					resolve(iter);
@@ -97,7 +119,7 @@
    var champModel = new JSONModel();
 			var profileModel = new JSONModel();
 			
-			this.getChampionList(url, token).then(function(x){
+			this.getChampionList(token).then(function(x){
 				champModel.setData(x);
 				that.getView().setModel(champModel,"champs");
 			});
@@ -117,7 +139,7 @@
             growingScrollToLoad="false">
             <StandardListItem title="{champs>name}, {champs>title}" press="onPressListItem" 
               type="Navigation" description="{champs>lore}"
-              icon="ddragonLin.leagueoflegends.com/cdn/7.21.1/img/champion/{champs>image/full}"
+              icon="/ddragon/7.21.1/img/champion/{champs>image/full}"
               iconDensityAware="false" iconInset="false"/>
           </List>
         </l:BlockLayoutCell>
@@ -125,3 +147,203 @@
     </l:BlockLayout>
 	</ScrollContainer>
    ```
+   ## 3. Profile header
+   
+   Landing.controller.js
+   
+   ```
+   New functions:
+   
+   getProfileData: function(token){
+			return new Promise(function(resolve,reject){
+				$.get("/league/lol/summoner/v3/summoners/by-name/csitikaa?api_key=" + token,function(data){
+					resolve(data);
+				});
+			});
+		},
+   
+   getMatchListForPlayer: function(x,token){
+			return new Promise(function(resolve,reject){
+				$.get("/league/lol/match/v3/matchlists/by-account/" + x + "/recent?api_key=" + token,function(data){
+					resolve(data);
+				});	
+			});
+		},
+  
+  getGameDataByMatchId: function(x,token){
+			var that = this;
+			var obj = null;
+		
+			return new Promise(function(resolve,reject){
+				$.get("/league/lol/match/v3/matches/" + x + "?api_key=" + token,function(data){
+					data.participantIdentities.forEach(function(item,index){
+						if(item.player.summonerName === "csitikaa"){
+							var elem = data.participants.filter(function(participant){
+								return participant.participantId === item.participantId; 
+							});
+							
+							obj = elem[0];
+							obj.championName = that.findChampionNameById(obj.championId).key;
+							
+							resolve(obj);
+						}
+					});
+				});
+			});	
+		},
+   
+		
+   Call it in onInit:
+   
+   this.getProfileData(token).then(function(Profile){
+				profileModel.setData({
+					basicData: Profile,
+					recentMatches: null
+				});
+				that.getView().setModel(profileModel,"profileModel");
+				
+				return that.getMatchListForPlayer(Profile.accountId, token);
+	
+			}).then(function(matchList){
+				var obj = [];
+				matchList.matches.forEach(function(item,index){
+					obj.push(that.getGameDataByMatchId(item.gameId,token));
+				});
+				return obj;
+				
+			}).then(function(gameDetails){
+				Promise.all(gameDetails).then(function(data){
+					that.getView().getModel("profileModel").setProperty("/recentMatches",data);
+					
+				});
+			});
+			
+   ```
+   
+   Landing.view.xml
+   
+   ```
+   <l:BlockLayoutRow>
+			<l:BlockLayoutCell title="" width="40%" backgroundColorSet="ColorSet5" backgroundColorShade="ShadeA">
+					<FlexBox class="sapUiLargeMarginEnd" alignItems="Center" justifyContent="Start">
+						<items>
+							<f:Avatar class="sapUiSmallMarginEnd"
+								src="/ddragon/7.21.1/img/profileicon/{profileModel>/basicData/profileIconId}.png" displaySize="L"></f:Avatar>
+							<Label design="Bold" text="{profileModel>/basicData/name} - Lvl {profileModel>/basicData/summonerLevel}"></Label>
+						</items>
+					</FlexBox>
+			</l:BlockLayoutCell>
+			<l:BlockLayoutCell width="60%" backgroundColorSet="ColorSet5" backgroundColorShade="ShadeA">
+				<List headerText="" items="{profileModel>/recentMatches}" class="sapContrast sapContrastPlus" >
+						<CustomListItem highlight="{= ${profileModel>stats/win} ? 'Success' : 'Error' }" class="sapUiLargeMarginEnd">
+							<l:Grid defaultSpan="L2 M2 S2" vSpacing="0" hSpacing="0" >
+								<l:content>
+									<Image
+										width="2rem"
+										height="2rem"
+										alt="playedChampion"
+										src="/ddragon/7.21.1/img/champion/{profileModel>championName}.png"></Image>
+							
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<Text text="{profileModel>timeline/lane}"></Text>
+									</HBox>
+									
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/kills}\" state="Success"></ObjectNumber>
+										<ObjectNumber number="{profileModel>stats/deaths}\" state="Error"></ObjectNumber>
+										<ObjectNumber number="{profileModel>stats/assists}" state="Warning"></ObjectNumber>
+									</HBox>
+								
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/totalMinionsKilled}"></ObjectNumber>
+										<Image alt="minions" src="/ddragon/5.5.1/img/ui/minion.png" ></Image>
+									</HBox>
+							
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/goldEarned}"></ObjectNumber>
+										<Image alt="gold" src="/ddragon/5.5.1/img/ui/gold.png" ></Image>
+									</HBox>
+								
+								</l:content>
+							</l:Grid>
+						</CustomListItem>
+					</List>
+			</l:BlockLayoutCell>
+		</l:BlockLayoutRow>
+   ```
+   ## 4. Navigation with parameters
+ Landing.controller.js
+ 
+ 
+    ```
+    onPressListItem: function(e){
+			var router = sap.ui.core.UIComponent.getRouterFor(this);
+			var champName = e.getSource().getBindingContext("champs").getObject().key;
+			
+			router.navTo("detail",{
+				championName: encodeURI(champName)
+			});
+		}
+    ```
+    
+Details.controller.js
+    
+    ```
+    onInit:
+    
+    var router = sap.ui.core.UIComponent.getRouterFor(this);
+			router.getRoute("detail").attachPatternMatched(this._onObjectMatched, this);
+    
+    new function:
+    
+    _onObjectMatched: function(e){
+			var name = decodeURI(e.getParameter("arguments").championName);
+			this.getView().getModel("viewModel").setProperty("/imageBusy",true);
+			
+			this.getChampionByName(name).then(function(data){
+				
+			});
+			
+		},
+    ```
+    
+Init router:
+ Component.js
+ 
+    ```
+    init:
+    
+    this.getRouter().initialize();
+    ```
+    
+# 5. Get selected champion
+  
+  Details.controller.js
+  
+  ```
+  onInit:
+  
+  	var viewModel = new JSONModel({
+				imageBusy: false,
+				selectedChampion: {
+					name: null,
+					details: null
+				}
+			});
+			
+			this.getView().setModel(viewModel,"viewModel");
+  ```
+  
+  ```
+  new function: 
+  getChampionByName: function(name){
+			var url = "/ddragon/7.21.1/data/en_US/champion/";
+			var that = this;
+			return new Promise(function(resolve,reject){
+				$.get(url + name + ".json",function(champion){
+					that.getView().getModel("viewModel").setProperty("/selectedChampion/details",champion.data[name]);
+					that.getView().getModel("viewModel").setProperty("/selectedChampion/name",name);
+				});
+			});
+		},
+  ```
