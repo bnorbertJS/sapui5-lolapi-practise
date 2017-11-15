@@ -135,7 +135,7 @@
       <l:BlockLayoutRow>
         <l:BlockLayoutCell backgroundColorSet="ColorSet5" backgroundColorShade="ShadeB">
           <Label text="Champion list" design="Bold"></Label>
-          <List class="sapContrast sapContrastPlus" mode="None" items="{champs>/}" inset="true" growing="true" growingThreshold="10"
+          <List class="sapContrast sapContrastPlus" mode="None" items="{champs>/}" inset="true" growing="true" growingThreshold="15"
             growingScrollToLoad="false">
             <StandardListItem title="{champs>name}, {champs>title}" press="onPressListItem" 
               type="Navigation" description="{champs>lore}"
