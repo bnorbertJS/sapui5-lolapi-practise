@@ -1,0 +1,99 @@
+{
+	"_version": "1.7.0",
+	"sap.app": {
+		"id": "bn.league-api",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.40.12"
+		}
+	},
+
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+
+		]
+	},
+
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "bn.league-api.view.App",
+			"type": "XML"
+		},
+		"dependencies": {
+			"minUI5Version": "1.30.0",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.m": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "bn.league-api.i18n.i18n"
+				}
+			}
+		},
+		"routing": {
+		  "config": {
+			"routerClass": "sap.m.routing.Router",
+			"viewType": "XML",
+			"viewPath": "bn.league-api.view",
+			"controlId": "app",
+			"controlAggregation": "pages"
+		  },
+		  "routes": [
+			{
+			  "pattern": "",
+			  "name": "landing",
+			  "target": "landing"
+			},
+			{
+			  "pattern": "Details/{championName}",
+			  "name": "detail",
+			  "target": "detail"
+			}
+		  ],
+		  "targets": {
+			"landing": {
+			  "viewName": "Landing"
+			},
+			"detail": {
+			  "viewName": "Detail"
+			}
+		  }
+		},
+		"resources": {
+			"css": [{
+				"uri": "css/style.css"
+			}]
+		}
+	}
+}

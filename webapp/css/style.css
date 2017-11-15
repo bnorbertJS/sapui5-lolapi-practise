@@ -1,0 +1,18 @@
+/* Enter your custom styles here */
+
+.fullsize-header{
+	height: 100vh;
+}
+
+.stats{
+	position: absolute;
+	height: 100%;
+	left:0;
+	top: 0;
+}
+
+.customStyle{
+	background-color: black;
+	opacity: .8;
+}
+

@@ -1,0 +1,67 @@
+<mvc:View controllerName="bn.league-api.controller.Landing" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.f" xmlns:core="sap.ui.core">
+	<ScrollContainer
+		height="100%"
+		width="100%"
+		vertical="true">
+	<l:BlockLayout >
+		<l:BlockLayoutRow>
+			<l:BlockLayoutCell title="" width="40%" backgroundColorSet="ColorSet5" backgroundColorShade="ShadeA">
+					<FlexBox class="sapUiLargeMarginEnd" alignItems="Center" justifyContent="Start">
+						<items>
+							<f:Avatar class="sapUiSmallMarginEnd"
+								src="/ddragon/7.21.1/img/profileicon/{profileModel>/basicData/profileIconId}.png" displaySize="L"></f:Avatar>
+							<Label design="Bold" text="{profileModel>/basicData/name} - Lvl {profileModel>/basicData/summonerLevel}"></Label>
+						</items>
+					</FlexBox>
+			</l:BlockLayoutCell>
+			<l:BlockLayoutCell width="60%" backgroundColorSet="ColorSet5" backgroundColorShade="ShadeA">
+				<List headerText="" items="{profileModel>/recentMatches}" class="sapContrast sapContrastPlus" >
+						<CustomListItem highlight="{= ${profileModel>stats/win} ? 'Success' : 'Error' }" class="sapUiLargeMarginEnd">
+							<l:Grid defaultSpan="L2 M2 S2" vSpacing="0" hSpacing="0" >
+								<l:content>
+									<Image
+										width="2rem"
+										height="2rem"
+										alt="playedChampion"
+										src="/ddragon/7.21.1/img/champion/{profileModel>championName}.png"></Image>
+							
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<Text text="{profileModel>timeline/lane}"></Text>
+									</HBox>
+									
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/kills}\" state="Success"></ObjectNumber>
+										<ObjectNumber number="{profileModel>stats/deaths}\" state="Error"></ObjectNumber>
+										<ObjectNumber number="{profileModel>stats/assists}" state="Warning"></ObjectNumber>
+									</HBox>
+								
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/totalMinionsKilled}"></ObjectNumber>
+										<Image alt="minions" src="/ddragon/5.5.1/img/ui/minion.png" ></Image>
+									</HBox>
+							
+									<HBox displayInline="true" alignItems="Center" height="2rem">
+										<ObjectNumber number="{profileModel>stats/goldEarned}"></ObjectNumber>
+										<Image alt="gold" src="/ddragon/5.5.1/img/ui/gold.png" ></Image>
+									</HBox>
+								
+								</l:content>
+							</l:Grid>
+						</CustomListItem>
+					</List>
+			</l:BlockLayoutCell>
+		</l:BlockLayoutRow>
+		<l:BlockLayoutRow>
+			<l:BlockLayoutCell backgroundColorSet="ColorSet5" backgroundColorShade="ShadeB">
+				<Label text="Champion list" design="Bold"></Label>
+				<List class="sapContrast sapContrastPlus" mode="None" items="{champs>/}" inset="true" growing="true" growingThreshold="10"
+					growingScrollToLoad="false">
+					<StandardListItem title="{champs>name}, {champs>title}" press="onPressListItem" type="Navigation" description="{champs>lore}"
+						icon="/ddragon/7.21.1/img/champion/{champs>image/full}" iconDensityAware="false" iconInset="false"/>
+				</List>
+			</l:BlockLayoutCell>
+		</l:BlockLayoutRow>
+	</l:BlockLayout>
+	</ScrollContainer>
+</mvc:View>
