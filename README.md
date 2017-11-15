@@ -3,12 +3,12 @@
   
 ## Step by step guide
 Libs:
-	* sap.m
-	* sap.ui.layout
-	* sap.f
-	* sap.suite.ui.microchart
+	1. sap.m
+	2. sap.ui.layout
+	3. sap.f
+	4. sap.suite.ui.microchart
 Optional:
-	* appWidthLimited: false
+	1. appWidthLimited: false
 ## 1. Creating views controllers, setting up manifest.json and routing.
   App.controller.js
   ```
