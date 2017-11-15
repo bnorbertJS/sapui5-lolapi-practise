@@ -347,3 +347,111 @@ Init router:
 			});
 		},
   ```
+
+  Details.view.xml
+  
+  ```
+  <ScrollContainer
+		height="100%"
+		width="100%"
+		vertical="true">
+		
+		<html:div class="fullsize-header">
+			<Image id="header"
+				alt="champ"
+				mode="Background"
+				height="100%"
+				width="100%"
+				backgroundSize="cover"
+				backgroundRepeat="no-repeat"
+				backgroundPosition="center top"
+				src="/ddragon/img/champion/splash/{viewModel>/selectedChampion/name}_0.jpg">
+			</Image>
+		</html:div>
+  </ScrollContainer>
+  ```
+  
+  style.css
+  
+  
+  ```
+  .fullsize-header{
+	height: 100vh;
+}
+  ```
+  
+  Details.view.xml
+  
+  Left-side panel with custom css
+  
+  ```
+  <VBox class="stats customStyle">
+				<FlexBox width="20rem" height="40%" alignItems="Start" direction="Column" class="sapUiSmallMarginTop sapContrast sapContrastPlus">
+					<items>
+					<chart:InteractiveDonutChart displayedSegments="4" selectionChanged="onSelectionChanged" press="press" >
+						<chart:segments>
+							<chart:InteractiveDonutChartSegment label="Attack" value="{viewModel>/selectedChampion/details/info/attack}"/>
+							<chart:InteractiveDonutChartSegment label="Defense" value="{viewModel>/selectedChampion/details/info/defense}"/>
+							<chart:InteractiveDonutChartSegment label="Difficulty" value="{viewModel>/selectedChampion/details/info/difficulty}"/>
+							<chart:InteractiveDonutChartSegment label="Magic" value="{viewModel>/selectedChampion/details/info/magic}"/>
+						</chart:segments>
+					</chart:InteractiveDonutChart>
+					
+					<ScrollContainer vertical="true" width="20rem" height="350px">
+						<List
+							headerText="Skins" items="{viewModel>/selectedChampion/details/skins/}" class="sapContrast sapContrastPlus" >
+							<ActionListItem text="{viewModel>name}" press="changeSkin"/>
+						</List>
+					</ScrollContainer>
+					</items>
+				</FlexBox>
+			</VBox>
+  ```
+  
+  style.css:
+  
+  ```
+  .stats{
+	position: absolute;
+	height: 100%;
+	left:0;
+	top: 0;
+}
+
+.customStyle{
+	background-color: black;
+	opacity: .8;
+}
+  ```
+  
+Additional infos
+Details.view.xml
+
+```
+<l:BlockLayout>
+				<l:BlockLayoutRow class="sapContrast sapContrastPlus">
+					<l:BlockLayoutCell title="Additional info" titleAlignment="Center">
+						<VBox>
+							<Text text="Feel free to add additional text here."></Text>
+							
+						</VBox>
+					</l:BlockLayoutCell>
+				</l:BlockLayoutRow>
+				<l:BlockLayoutRow>
+					<l:BlockLayoutCell title="Additional info2" titleAlignment="Center">
+						<VBox>
+							<Text text="Feel free to add additional text here."></Text>
+							
+						</VBox>
+					</l:BlockLayoutCell>
+				</l:BlockLayoutRow>
+				<l:BlockLayoutRow class="sapContrast sapContrastPlus">
+					<l:BlockLayoutCell title="Additional info3" titleAlignment="Center">
+						<VBox>
+							<Text text="Feel free to add additional text here."></Text>
+							
+						</VBox>
+					</l:BlockLayoutCell>
+				</l:BlockLayoutRow>
+			</l:BlockLayout>
+```
