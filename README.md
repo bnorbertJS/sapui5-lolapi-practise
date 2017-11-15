@@ -191,6 +191,14 @@
 				});
 			});	
 		},
+		
+	findChampionNameById: function(id){
+			var champ = this.getView().getModel("champs").getData().filter(function(x){
+				return id === x.id;	
+			});
+			
+			return champ[0];
+		},
    
 		
    Call it in onInit:
